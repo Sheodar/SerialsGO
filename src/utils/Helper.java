@@ -13,7 +13,7 @@ public class Helper {
                         "\n _______________________________________________________________" +
                         "\n |- site -------------+- go to the website to check for updates |"+
                         "\n (Search file SerialsGO.rar)"+
-                        "\n Your version - 1.2 "
+                        "\n Your version - 1.3 "
         );
     }
 }

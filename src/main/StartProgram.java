@@ -82,7 +82,7 @@ public class StartProgram extends SQLException {
                     helper();
                     break;
                 case "site":
-                    openerURL("https://github.com/Sheodar/SerialsGO/commits/master");
+                    openerURL("https://github.com/Sheodar/SerialsGO/");
                     break;
                 default:
                     if (Objects.equals(command[0], "exit")) {
