@@ -12,7 +12,8 @@ public class Helper {
                         "\n |- help -------------+- help(show all commands) ---------------|" +
                         "\n _______________________________________________________________" +
                         "\n |- site -------------+- go to the website to check for updates |"+
-                        "\n Your version - 1.0 "
+                        "\n (Search file SerialsGO.rar)"+
+                        "\n Your version - 1.1 "
         );
     }
 }
