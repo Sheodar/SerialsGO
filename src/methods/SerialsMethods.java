@@ -9,7 +9,6 @@ import java.util.Scanner;
 import static dataBase.ConnectionDB.conn;
 import static utils.Utils.openerURL;
 
-
 public class SerialsMethods {
     public void allSerial() throws SQLException {
         try (Statement st = conn.createStatement()) {
@@ -26,6 +25,7 @@ public class SerialsMethods {
             }
         }
     }
+
     public void addSerial() throws SQLException {
         Scanner printOpt = new Scanner(System.in);
         try (Statement st = conn.createStatement()) {
@@ -33,8 +33,23 @@ public class SerialsMethods {
             String serialName = printOpt.nextLine();
             System.out.println("Enter URL serial:");
             String URL = printOpt.nextLine();
-            st.execute("INSERT INTO serialsURL (nameSerial, URL) VALUES (" +
-                    "'" + serialName + "','" + URL + "')");
+
+            String[] checkUrlFirst = URL.split("://");
+            if (Objects.equals(checkUrlFirst[0], "http")) {
+                st.execute("INSERT INTO serialsURL (nameSerial, URL) VALUES (" +
+                        "'" + serialName + "','" + URL + "')");
+            } else if (Objects.equals(checkUrlFirst[0], "https")) {
+                st.execute("INSERT INTO serialsURL (nameSerial, URL) VALUES (" +
+                        "'" + serialName + "','" + URL + "')");
+            } else {
+                String[] checkUrlSecond = URL.split("\\.");
+                if (Objects.equals(checkUrlSecond[0], "www")) {
+                    st.execute("INSERT INTO serialsURL (nameSerial, URL) VALUES (" +
+                            "'" + serialName + "','" + URL + "')");
+                } else {
+                    System.out.println("[Please. print correct URL (http://<URL> or https://<URL> or www.<URL>]");
+                }
+            }
         }
     }
 
@@ -52,8 +67,6 @@ public class SerialsMethods {
             }
         }
     }
-
-
 
     public void changeSerial(Integer idSerial) throws SQLException {
         try (Statement st = conn.createStatement()) {
@@ -76,18 +89,30 @@ public class SerialsMethods {
                         case "2":
                             System.out.println("Enter new URL: ");
                             String newURL = printOpt.nextLine();
-                            st.execute("UPDATE serialsURL SET URL = '" + newURL + "' WHERE idSerial = " + idSerial);
+                            String[] checkUrlFirst = newURL.split("://");
+                            if (Objects.equals(checkUrlFirst[0], "http")) {
+                                st.execute("UPDATE serialsURL SET URL = '" + newURL + "' WHERE idSerial = " + idSerial);
+                            } else if (Objects.equals(checkUrlFirst[0], "https")) {
+                                st.execute("UPDATE serialsURL SET URL = '" + newURL + "' WHERE idSerial = " + idSerial);
+                            } else {
+                                String[] checkUrlSecond = newURL.split("\\.");
+                                if (Objects.equals(checkUrlSecond[0], "www")) {
+                                    st.execute("UPDATE serialsURL SET URL = '" + newURL + "' WHERE idSerial = " + idSerial);
+                                } else {
+                                    System.out.println("[Please. print correct URL (http://<URL> or https://<URL> or www.<URL>]");
+                                }
+                            }
                             break;
                         default:
-                            if (Objects.equals(outConsoleCatOpt, "3")){
+                            if (Objects.equals(outConsoleCatOpt, "3")) {
                                 break;
                             }
                             System.out.println("[Invalid command]");
                             break;
                     }
-                } while (!Objects.equals(outConsoleCatOpt, "3"));
+                }
+                while (!Objects.equals(outConsoleCatOpt, "3"));
             }
-
         }
     }
 }
