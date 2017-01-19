@@ -10,16 +10,32 @@ import static dataBase.ConnectionDB.conn;
 import static utils.Utils.openerURL;
 
 public class SerialsMethods {
+    public void deleteSerial(Integer idCourse) throws SQLException {
+        try (Statement st = conn.createStatement()) {
+            st.execute("SELECT * FROM serialsURL");
+            ResultSet res = st.getResultSet();
+            if (!res.next()) {
+                System.out.println("Not created serials. Please, create signature.");
+                res.close();
+            } else {
+                st.execute("SELECT * FROM serialsURL");
+                st.execute("DELETE FROM serialsURL WHERE idCourse = " + idCourse);
+            }
+        }
+    }
     public void allSerial() throws SQLException {
         try (Statement st = conn.createStatement()) {
             st.execute("SELECT * FROM serialsURL");
             ResultSet res = st.getResultSet();
             if (!res.next()) {
                 System.out.println("Not created serials. Please, create signature.");
+                res.close();
             } else {
-                while (res.next()) {
-                    int id = res.getInt("idSerial");
-                    String name = res.getString("nameSerial");
+                st.execute("SELECT * FROM serialsURL");
+                ResultSet res2 = st.getResultSet();
+                while (res2.next()) {
+                    int id = res2.getInt("idSerial");
+                    String name = res2.getString("nameSerial");
                     System.out.println("- ID [" + id + "]; Название: " + name + ".");
                 }
             }

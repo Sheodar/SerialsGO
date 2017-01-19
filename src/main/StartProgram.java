@@ -29,7 +29,7 @@ public class StartProgram extends SQLException {
                 case "all":
                     switch (command[1]) {
                         case "serials":
-                            startSerial.allSerial();//показать все сериалы
+                            startSerial.allSerial();
                             break;
                         default:
                             System.out.println("[Invalid command]");
@@ -39,7 +39,7 @@ public class StartProgram extends SQLException {
                 case "add":
                     switch (command[1]) {
                         case "serial":
-                            startSerial.addSerial();//создал сериал
+                            startSerial.addSerial();
                             break;
                         default:
                             System.out.println("[Invalid command]");
@@ -56,7 +56,26 @@ public class StartProgram extends SQLException {
                             }
                             try {
                                 Integer ID = new Integer(command[2]);
-                                startSerial.changeSerial(ID);//изменил сериал Х
+                                startSerial.changeSerial(ID);
+                            } catch (Exception e) {
+                                System.out.println("[Invalid command]");
+                            }
+                            break;
+                        default:
+                            System.out.println("[Invalid command]");
+                            break;
+                    }
+                    break;
+                case "del":
+                    switch (command[1]) {
+                        case "serial":
+                            if (command[2] == null) {
+                                System.out.println("[Invalid command]");
+                                break;
+                            }
+                            try {
+                                Integer ID = new Integer(command[2]);
+                                startSerial.deleteSerial(ID);
                             } catch (Exception e) {
                                 System.out.println("[Invalid command]");
                             }
@@ -73,7 +92,7 @@ public class StartProgram extends SQLException {
                     }
                     try {
                         Integer ID = new Integer(command[1]);
-                        startSerial.openSerial(ID);//открыл URL сериала Х
+                        startSerial.openSerial(ID);
                     } catch (Exception e) {
                         System.out.println("[Invalid command]");
                     }

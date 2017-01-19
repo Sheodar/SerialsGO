@@ -6,6 +6,7 @@ public class Helper {
                 " _______________________________________________________________" +
                         "\n |- add serial -------+- add new serial ------------------------|" +
                         "\n |- change serial X --+- change serial X -----------------------|" +
+                        "\n |- del serial X -----+- delete serial X -----------------------|" +
                         "\n |- all serials ------+- show all serials ----------------------|" +
                         "\n |- open serial X ----+- open serial X -------------------------|" +
                         "\n |- exit -------------+- close program -------------------------|" +
@@ -13,7 +14,7 @@ public class Helper {
                         "\n _______________________________________________________________" +
                         "\n |- site -------------+- go to the website to check for updates |"+
                         "\n (Search file SerialsGO.rar)"+
-                        "\n Your version - 1.3 "
+                        "\n Your version - 1.4 "
         );
     }
 }

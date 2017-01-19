@@ -25,6 +25,4 @@ public class ConnectionDB {
             e.printStackTrace();
         }
     }
-
-
 }
