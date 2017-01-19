@@ -19,7 +19,7 @@ public class SerialsMethods {
                 res.close();
             } else {
                 st.execute("SELECT * FROM serialsURL");
-                st.execute("DELETE FROM serialsURL WHERE idCourse = " + idCourse);
+                st.execute("DELETE FROM serialsURL WHERE idSerial = " + idCourse);
             }
         }
     }
