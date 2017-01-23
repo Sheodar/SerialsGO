@@ -18,6 +18,9 @@ public class StartProgram extends SQLException {
     public static void main(String[] args) throws SQLException {
         DBConnect();
         System.out.println("Welcome!");
+        System.out.println("You can open this serial(s): ");
+        startSerial.allSerial();
+        System.out.println("________________________________________");
         Scanner printOpt = new Scanner(System.in);
         String print;
         String[] command;
