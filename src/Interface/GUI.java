@@ -26,6 +26,8 @@ public class GUI extends JFrame {
     private JPanel BotBar;
     private JButton UPButton;
     private JButton changeSerial;
+    private JLabel youSerials;
+    private JLabel clickTo;
     private ArrayList<JButton> manyButton = new ArrayList<>();
 
 
@@ -33,6 +35,7 @@ public class GUI extends JFrame {
         for (int x = 0; x < allSerialsName.size(); x++) {
             manyButton.add(x, new JButton(allSerialsName.get(x)));
             allSerials.add(manyButton.get(x));
+            allSerials.add(Box.createVerticalStrut(3));
             manyButton.get(x).setAlignmentX(JComponent.CENTER_ALIGNMENT);
             int finalX = x + 1;
             buttonSerial++;
@@ -51,17 +54,6 @@ public class GUI extends JFrame {
 
     private void createAllSerials() {
         allSerials.setLayout(new BoxLayout(allSerials, BoxLayout.Y_AXIS));
-        Font font1 = new Font("Verdana", Font.PLAIN, 9);
-        Font font2 = new Font("Verdana", Font.BOLD, 13);
-        JLabel you = new JLabel("You'r Serials");
-        you.setFont(font2);
-        you.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-        JLabel youOpen = new JLabel("(click to open)");
-        youOpen.setFont(font1);
-        youOpen.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-        allSerials.add(you);
-        allSerials.add(youOpen);
-        allSerials.add(Box.createVerticalStrut(10));
         try {
             printButton(SerialsMethods.allSerial());
         } catch (SQLException e) {
@@ -87,6 +79,14 @@ public class GUI extends JFrame {
         addSerialsPanel.setVisible(false);
         createAllSerials();
 
+        Font font1 = new Font("Verdana", Font.PLAIN, 9);
+        Font font2 = new Font("Verdana", Font.BOLD, 14);
+        clickTo.setFont(font1);
+//        you.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        youSerials.setFont(font2);
+//        youOpen.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+
+
         addSerial.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -106,9 +106,7 @@ public class GUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    for (JButton aManyButton : manyButton) {
-                        allSerials.remove(aManyButton);
-                    }
+                    allSerials.removeAll();
                     printButton(SerialsMethods.allSerial());
                     frameMain.setSize(new Dimension(401, 500));
                     frameMain.setSize(new Dimension(400, 500));
@@ -126,9 +124,7 @@ public class GUI extends JFrame {
                     addNameSerial.setText("");
                     addURLSerial.setText("");
                     addSerialsPanel.setVisible(false);
-                    for (JButton aManyButton : manyButton) {
-                        allSerials.remove(aManyButton);
-                    }
+                    allSerials.removeAll();
                     printButton(SerialsMethods.allSerial());
                     frameMain.setSize(new Dimension(400, 500));
                 } catch (SQLException e1) {
@@ -237,6 +233,12 @@ public class GUI extends JFrame {
                         URLField.setText("");
                         try {
                             SerialsMethods.deleteSerial((String) comboBox.getSelectedItem());
+                            comboBox.removeAllItems();
+                            for(int x = 0; 0<SerialsMethods.allSerial().size();x++) {
+                                if (x == SerialsMethods.allSerial().size())
+                                    break;
+                                comboBox.addItem(SerialsMethods.allSerial().get(x));
+                            }
                         } catch (SQLException e1) {
                             e1.printStackTrace();
                         }
@@ -246,6 +248,13 @@ public class GUI extends JFrame {
                 cancel.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+                        allSerials.removeAll();
+                        try {
+                            printButton(SerialsMethods.allSerial());
+                        } catch (SQLException e1) {
+                            e1.printStackTrace();
+                        }
+                        frameMain.setSize(new Dimension(400, 500));
                         nameField.setText("");
                         URLField.setText("");
                         frameMain.setVisible(true);
@@ -265,9 +274,13 @@ public class GUI extends JFrame {
                             }
                             nameField.setText("");
                             URLField.setText("");
-                            for (JButton aManyButton : manyButton) {
-                                allSerials.remove(aManyButton);
+                            comboBox.removeAllItems();
+                            for(int x = 0; 0<SerialsMethods.allSerial().size();x++) {
+                                if (x == SerialsMethods.allSerial().size())
+                                    break;
+                                comboBox.addItem(SerialsMethods.allSerial().get(x));
                             }
+                            allSerials.removeAll();
                             printButton(SerialsMethods.allSerial());
                             frameMain.setSize(new Dimension(400, 500));
                         } catch (SQLException e1) {
