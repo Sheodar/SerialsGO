@@ -3,6 +3,7 @@ package methods;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -10,6 +11,7 @@ import static dataBase.ConnectionDB.conn;
 import static utils.Utils.openerURL;
 
 public class SerialsMethods {
+
     public void deleteSerial(Integer idCourse) throws SQLException {
         try (Statement st = conn.createStatement()) {
             st.execute("SELECT * FROM serialsURL");
@@ -23,7 +25,8 @@ public class SerialsMethods {
             }
         }
     }
-    public void allSerial() throws SQLException {
+    public static ArrayList<String> allSerial() throws SQLException {
+        ArrayList<String> resultSerials = new ArrayList<>();
         try (Statement st = conn.createStatement()) {
             st.execute("SELECT * FROM serialsURL");
             ResultSet res = st.getResultSet();
@@ -36,19 +39,22 @@ public class SerialsMethods {
                 while (res2.next()) {
                     int id = res2.getInt("idSerial");
                     String name = res2.getString("nameSerial");
-                    System.out.println("- ID [" + id + "]; Название: " + name + ".");
+                    resultSerials.add(name);
+//                    System.out.println("- ID [" + id + "]; Название: " + name + ".");
                 }
             }
         }
+
+        return resultSerials;
     }
 
-    public void addSerial() throws SQLException {
+    public static void addSerial(String serialName, String URL) throws SQLException {
         Scanner printOpt = new Scanner(System.in);
         try (Statement st = conn.createStatement()) {
-            System.out.println("Enter name serial:");
-            String serialName = printOpt.nextLine();
-            System.out.println("Enter URL serial:");
-            String URL = printOpt.nextLine();
+//            System.out.println("Enter name serial:");
+//            String serialName = printOpt.nextLine();
+//            System.out.println("Enter URL serial:");
+//            String URL = printOpt.nextLine();
 
             String[] checkUrlFirst = URL.split("://");
             if (Objects.equals(checkUrlFirst[0], "http")) {
@@ -69,7 +75,7 @@ public class SerialsMethods {
         }
     }
 
-    public void openSerial(Integer idSerial) throws SQLException {
+    public static void openSerial(Integer idSerial) throws SQLException {
         try (Statement st = conn.createStatement()) {
             st.execute("SELECT * FROM serialsURL");
             ResultSet res = st.getResultSet();
@@ -131,4 +137,6 @@ public class SerialsMethods {
             }
         }
     }
+
+
 }
