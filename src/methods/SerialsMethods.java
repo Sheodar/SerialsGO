@@ -12,7 +12,7 @@ import static utils.Utils.openerURL;
 
 public class SerialsMethods {
 
-    public void deleteSerial(Integer idCourse) throws SQLException {
+    public static void deleteSerial(String name) throws SQLException {
         try (Statement st = conn.createStatement()) {
             st.execute("SELECT * FROM serialsURL");
             ResultSet res = st.getResultSet();
@@ -21,10 +21,11 @@ public class SerialsMethods {
                 res.close();
             } else {
                 st.execute("SELECT * FROM serialsURL");
-                st.execute("DELETE FROM serialsURL WHERE idSerial = " + idCourse);
+                st.execute("DELETE FROM serialsURL WHERE nameSerial = " + "'"+name+"'");
             }
         }
     }
+
     public static ArrayList<String> allSerial() throws SQLException {
         ArrayList<String> resultSerials = new ArrayList<>();
         try (Statement st = conn.createStatement()) {
@@ -37,25 +38,16 @@ public class SerialsMethods {
                 st.execute("SELECT * FROM serialsURL");
                 ResultSet res2 = st.getResultSet();
                 while (res2.next()) {
-                    int id = res2.getInt("idSerial");
                     String name = res2.getString("nameSerial");
                     resultSerials.add(name);
-//                    System.out.println("- ID [" + id + "]; Название: " + name + ".");
                 }
             }
         }
-
         return resultSerials;
     }
 
     public static void addSerial(String serialName, String URL) throws SQLException {
-        Scanner printOpt = new Scanner(System.in);
         try (Statement st = conn.createStatement()) {
-//            System.out.println("Enter name serial:");
-//            String serialName = printOpt.nextLine();
-//            System.out.println("Enter URL serial:");
-//            String URL = printOpt.nextLine();
-
             String[] checkUrlFirst = URL.split("://");
             if (Objects.equals(checkUrlFirst[0], "http")) {
                 st.execute("INSERT INTO serialsURL (nameSerial, URL) VALUES (" +
@@ -86,6 +78,41 @@ public class SerialsMethods {
                 res = st.getResultSet();
                 String URL = res.getString("URL");
                 openerURL(URL);
+            }
+        }
+    }
+
+    public static void changeSerialName(String newName, String oldName) throws SQLException {
+        try (Statement st = conn.createStatement()) {
+            st.execute("SELECT * FROM serialsURL");
+            ResultSet res = st.getResultSet();
+            if (!res.next()) {
+                System.out.println("Not created serials. Please, create signature.");
+            } else {
+                st.execute("UPDATE serialsURL SET nameSerial = '" + newName + "' WHERE nameSerial = " + "'"+oldName+"'");
+            }
+        }
+    }
+    public static void changeSerialURL(String newURL, String oldName) throws SQLException {
+        try (Statement st = conn.createStatement()) {
+            st.execute("SELECT * FROM serialsURL");
+            ResultSet res = st.getResultSet();
+            String[] checkUrlFirst = newURL.split("://");
+            if (!res.next()) {
+                System.out.println("Not created serials. Please, create signature.");
+            } else {
+                if (Objects.equals(checkUrlFirst[0], "http")) {
+                    st.execute("UPDATE serialsURL SET URL = '" + newURL + "' WHERE nameSerial = " + "'"+oldName+"'");
+                } else if (Objects.equals(checkUrlFirst[0], "https")) {
+                    st.execute("UPDATE serialsURL SET URL = '" + newURL + "' WHERE nameSerial = " + "'"+oldName+"'");
+                } else {
+                    String[] checkUrlSecond = newURL.split("\\.");
+                    if (Objects.equals(checkUrlSecond[0], "www")) {
+                        st.execute("UPDATE serialsURL SET URL = '" + newURL + "' WHERE nameSerial = " + "'"+oldName+"'");
+                    } else {
+                        System.out.println("[Please. print correct URL (http://<URL> or https://<URL> or www.<URL>]");
+                    }
+                }
             }
         }
     }
