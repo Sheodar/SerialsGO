@@ -48,12 +48,11 @@ public class GUI extends JFrame {
             c.fill = GridBagConstraints.HORIZONTAL;
             c.weightx = 0.5;
             c.gridx = 1;
-            c.gridy = x;
             c.insets.set(3, 3, 3, 3);
             allSerials.add(manyButton.get(x), c);
             manyButton.get(x).setAlignmentX(JComponent.CENTER_ALIGNMENT);
-            int finalX = x + 2;
             buttonSerial++;
+            int finalX = x;
             manyButton.get(x).addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -62,7 +61,7 @@ public class GUI extends JFrame {
                         if (Objects.equals(path, "")) {
                             path = "1";
                         }
-                        SerialsMethods.openSerial(finalX, path);
+                        SerialsMethods.openSerial(allSerialsName.get(finalX), path);
                     } catch (SQLException e1) {
                         e1.printStackTrace();
                     }
@@ -156,15 +155,16 @@ public class GUI extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                int sizeWidth = 400;
-                int sizeHeight = 200;
+                int sizeWidth = 420;
+                int sizeHeight = 175;
                 int locationX = (screenSize.width - sizeWidth) / 2;
                 int locationY = (screenSize.height - sizeHeight) / 2;
                 JFrame frameChange = new JFrame();
                 frameChange.setTitle("Change Serial");
                 frameChange.setBounds(locationX, locationY, sizeWidth, sizeHeight);
-                frameChange.setMinimumSize(new Dimension(400, 200));
+                frameChange.setMinimumSize(new Dimension(420, 175));
                 frameChange.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+                frameChange.setResizable(false);
                 frameMain.setVisible(false);
                 frameChange.setVisible(true);
                 JPanel panelChange = new JPanel(new GridBagLayout());
@@ -172,7 +172,7 @@ public class GUI extends JFrame {
                 GridBagConstraints c = new GridBagConstraints();
                 try {
                     comboBox = new JComboBox<>(SerialsMethods.allSerial().toArray(new String[SerialsMethods.allSerial().size()]));
-                    c.weightx = 0.5;
+                    c.weightx = 1;
                     c.fill = GridBagConstraints.HORIZONTAL;
                     c.gridx = 0;
                     c.gridy = 0;
@@ -324,6 +324,7 @@ public class GUI extends JFrame {
                 frameSettings.setBounds(locationX, locationY, sizeWidth, sizeHeight);
                 frameSettings.setMinimumSize(new Dimension(400, 175));
                 frameSettings.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+                frameSettings.setResizable(false);
                 frameMain.setVisible(false);
                 frameSettings.setVisible(true);
                 JPanel panelSettings = new JPanel(new GridBagLayout());

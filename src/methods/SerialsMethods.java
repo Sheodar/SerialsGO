@@ -107,9 +107,9 @@ public class SerialsMethods {
 
         }
     }//st.execute("SELECT * FROM serialsURL WHERE idSerial = " + idSerial);
-    public static void openSerial(Integer idSerial, String path) throws SQLException {
+    public static void openSerial(String name, String path) throws SQLException {
         try (Statement st = conn.createStatement()) {
-            st.execute("SELECT * FROM serialsURL WHERE idSerial = " + idSerial);
+            st.execute("SELECT * FROM serialsURL WHERE nameSerial = '" + name+"'");
             ResultSet res = st.getResultSet();
             if (!res.next()) {
                 System.out.println("Not created serials. Please, create signature.");
