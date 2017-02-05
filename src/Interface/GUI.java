@@ -6,10 +6,15 @@ import methods.SerialsMethods;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Objects;
 
-import static dataBase.ConnectionDB.DBConnect;
+import static dataBase.ConnectionDB.*;
 
 public class GUI extends JFrame {
     public static int buttonSerial = 0;
@@ -28,22 +33,36 @@ public class GUI extends JFrame {
     private JButton changeSerial;
     private JLabel youSerials;
     private JLabel clickTo;
+    private JButton settingsButton;
+    private JPanel pickBrowse;
+    private JButton pickIe;
     private ArrayList<JButton> manyButton = new ArrayList<>();
-
+    private static JTextField fieldOpera = new JTextField();
+    private static JTextField fieldChrome = new JTextField();
+    private static JTextField fieldIe = new JTextField();
 
     private void printButton(ArrayList<String> allSerialsName) {
         for (int x = 0; x < allSerialsName.size(); x++) {
+            GridBagConstraints c = new GridBagConstraints();
             manyButton.add(x, new JButton(allSerialsName.get(x)));
-            allSerials.add(manyButton.get(x));
-            allSerials.add(Box.createVerticalStrut(3));
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.weightx = 0.5;
+            c.gridx = 1;
+            c.gridy = x;
+            c.insets.set(3, 3, 3, 3);
+            allSerials.add(manyButton.get(x), c);
             manyButton.get(x).setAlignmentX(JComponent.CENTER_ALIGNMENT);
-            int finalX = x + 1;
+            int finalX = x + 2;
             buttonSerial++;
             manyButton.get(x).addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     try {
-                        SerialsMethods.openSerial(finalX);
+                        String path = SerialsMethods.pathBrowsers("main");
+                        if (Objects.equals(path, "")) {
+                            path = "1";
+                        }
+                        SerialsMethods.openSerial(finalX, path);
                     } catch (SQLException e1) {
                         e1.printStackTrace();
                     }
@@ -53,7 +72,7 @@ public class GUI extends JFrame {
     }
 
     private void createAllSerials() {
-        allSerials.setLayout(new BoxLayout(allSerials, BoxLayout.Y_AXIS));
+        allSerials.setLayout(new GridBagLayout());
         try {
             printButton(SerialsMethods.allSerial());
         } catch (SQLException e) {
@@ -74,7 +93,7 @@ public class GUI extends JFrame {
         frameMain.setTitle("My Serials");
         frameMain.setVisible(true);
         frameMain.setBounds(locationX, locationY, sizeWidth, sizeHeight);
-        frameMain.setMinimumSize(new Dimension(400, 550));
+        frameMain.setMinimumSize(new Dimension(400, 650));
         frameMain.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         addSerialsPanel.setVisible(false);
         createAllSerials();
@@ -82,10 +101,7 @@ public class GUI extends JFrame {
         Font font1 = new Font("Verdana", Font.PLAIN, 9);
         Font font2 = new Font("Verdana", Font.BOLD, 14);
         clickTo.setFont(font1);
-//        you.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         youSerials.setFont(font2);
-//        youOpen.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-
 
         addSerial.addActionListener(new ActionListener() {
             @Override
@@ -102,6 +118,7 @@ public class GUI extends JFrame {
                 addSerialsPanel.setVisible(false);
             }
         });
+
         UPButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -133,6 +150,7 @@ public class GUI extends JFrame {
 
             }
         });
+
         changeSerial.addActionListener(new ActionListener() {
             JComboBox<String> comboBox;
 
@@ -146,7 +164,7 @@ public class GUI extends JFrame {
                 frameChange.setTitle("Change Serial");
                 frameChange.setBounds(locationX, locationY, sizeWidth, sizeHeight);
                 frameChange.setMinimumSize(new Dimension(400, 200));
-                frameChange.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                frameChange.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
                 frameMain.setVisible(false);
                 frameChange.setVisible(true);
                 JPanel panelChange = new JPanel(new GridBagLayout());
@@ -234,7 +252,7 @@ public class GUI extends JFrame {
                         try {
                             SerialsMethods.deleteSerial((String) comboBox.getSelectedItem());
                             comboBox.removeAllItems();
-                            for(int x = 0; 0<SerialsMethods.allSerial().size();x++) {
+                            for (int x = 0; 0 < SerialsMethods.allSerial().size(); x++) {
                                 if (x == SerialsMethods.allSerial().size())
                                     break;
                                 comboBox.addItem(SerialsMethods.allSerial().get(x));
@@ -275,7 +293,7 @@ public class GUI extends JFrame {
                             nameField.setText("");
                             URLField.setText("");
                             comboBox.removeAllItems();
-                            for(int x = 0; 0<SerialsMethods.allSerial().size();x++) {
+                            for (int x = 0; 0 < SerialsMethods.allSerial().size(); x++) {
                                 if (x == SerialsMethods.allSerial().size())
                                     break;
                                 comboBox.addItem(SerialsMethods.allSerial().get(x));
@@ -293,10 +311,401 @@ public class GUI extends JFrame {
 
             }
         });
+
+        settingsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int sizeWidth = 400;
+                int sizeHeight = 175;
+                int locationX = (screenSize.width - sizeWidth) / 2;
+                int locationY = (screenSize.height - sizeHeight) / 2;
+                JFrame frameSettings = new JFrame();
+                frameSettings.setTitle("Settings");
+                frameSettings.setBounds(locationX, locationY, sizeWidth, sizeHeight);
+                frameSettings.setMinimumSize(new Dimension(400, 175));
+                frameSettings.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+                frameMain.setVisible(false);
+                frameSettings.setVisible(true);
+                JPanel panelSettings = new JPanel(new GridBagLayout());
+                frameSettings.setContentPane(panelSettings);
+                GridBagConstraints c = new GridBagConstraints();
+
+                JLabel name = new JLabel(new ImageIcon("other/chrome.jpg"));
+                c.fill = GridBagConstraints.NONE;
+                c.weightx = 0.5;
+                c.gridx = 0;
+                c.gridy = 0;
+                c.insets.set(3, 0, 3, 0);
+                panelSettings.add(name, c);
+                name = new JLabel(new ImageIcon("other/opera.jpg"));
+                c.fill = GridBagConstraints.NONE;
+                c.weightx = 0.5;
+                c.gridx = 0;
+                c.gridy = 1;
+                c.insets.set(3, -15, 3, -15);
+                panelSettings.add(name, c);
+                name = new JLabel(new ImageIcon("other/IE.jpg"));
+                c.fill = GridBagConstraints.NONE;
+                c.weightx = 0.5;
+                c.gridx = 0;
+                c.gridy = 2;
+                c.insets.set(3, -15, 3, -15);
+                panelSettings.add(name, c);
+
+                c.fill = GridBagConstraints.HORIZONTAL;
+                fieldChrome.setPreferredSize(new Dimension(100, 27));
+                c.weightx = 3;
+                c.gridx = 1;
+                c.gridy = 0;
+                c.insets.set(3, 3, 3, 3);
+                try {
+                    fieldChrome.setText(SerialsMethods.pathBrowsers("chrome"));
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+                panelSettings.add(fieldChrome, c);
+
+
+                c.fill = GridBagConstraints.HORIZONTAL;
+                fieldOpera.setPreferredSize(new Dimension(100, 27));
+                c.weightx = 3;
+                c.gridx = 1;
+                c.gridy = 1;
+                c.insets.set(3, 3, 3, 3);
+                try {
+                    fieldOpera.setText(SerialsMethods.pathBrowsers("opera"));
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+                panelSettings.add(fieldOpera, c);
+
+                c.fill = GridBagConstraints.HORIZONTAL;
+                fieldIe.setPreferredSize(new Dimension(1, 27));
+                c.weightx = 3;
+                c.gridx = 1;
+                c.gridy = 2;
+                c.insets.set(3, 3, 3, 3);
+                try {
+                    fieldIe.setText(SerialsMethods.pathBrowsers("ie"));
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+                panelSettings.add(fieldIe, c);
+
+                JButton saveButton = new JButton("Save");
+                c.fill = GridBagConstraints.NONE;
+                c.ipadx = 70;
+                c.weightx = 1;
+                c.gridx = 1;
+                c.gridy = 4;
+                c.gridwidth = 2;
+                c.insets.set(0, 35, 0, 10);
+                panelSettings.add(saveButton, c);
+
+                JButton pickChrome = new JButton("Browse");
+                pickChrome.setPreferredSize(new Dimension(-20, 26));
+                c.fill = GridBagConstraints.HORIZONTAL;
+                c.weightx = 1;
+                c.gridx = 2;
+                c.gridy = 0;
+                c.gridwidth = 2;
+                c.insets.set(0, 0, 0, 3);
+                panelSettings.add(pickChrome, c);
+
+                JButton pickOpera = new JButton("Browse");
+                pickOpera.setPreferredSize(new Dimension(-20, 26));
+                c.fill = GridBagConstraints.HORIZONTAL;
+                c.weightx = 1;
+                c.gridx = 2;
+                c.gridy = 1;
+                c.gridwidth = 2;
+                c.insets.set(0, 0, 0, 3);
+                panelSettings.add(pickOpera, c);
+
+                JButton pickIe = new JButton("Browse");
+                pickIe.setPreferredSize(new Dimension(-20, 26));
+                c.fill = GridBagConstraints.HORIZONTAL;
+                c.weightx = 1;
+                c.gridx = 2;
+                c.gridy = 2;
+                c.gridwidth = 2;
+                c.insets.set(0, 0, 0, 3);
+                panelSettings.add(pickIe, c);
+
+                pickChrome.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        JFileChooser fileopen = new JFileChooser();
+                        int ret = fileopen.showDialog(null, "Открыть файл");
+                        if (ret == JFileChooser.APPROVE_OPTION) {
+                            File file = fileopen.getSelectedFile();
+                            fieldChrome.setText(file.getAbsolutePath());
+                        }
+                    }
+                });
+
+                pickOpera.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        JFileChooser fileopen = new JFileChooser();
+                        int ret = fileopen.showDialog(null, "Открыть файл");
+                        if (ret == JFileChooser.APPROVE_OPTION) {
+                            File file = fileopen.getSelectedFile();
+                            fieldOpera.setText(file.getAbsolutePath());
+                        }
+                    }
+                });
+
+                pickIe.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        JFileChooser fileopen = new JFileChooser();
+                        int ret = fileopen.showDialog(null, "Открыть файл");
+                        if (ret == JFileChooser.APPROVE_OPTION) {
+                            File file = fileopen.getSelectedFile();
+                            fieldIe.setText(file.getAbsolutePath());
+                        }
+                    }
+                });
+
+                saveButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        allSerials.removeAll();
+                        try {
+                            printButton(SerialsMethods.allSerial());
+                        } catch (SQLException e1) {
+                            e1.printStackTrace();
+                        }
+                        try {
+                            try (Statement st = conn2.createStatement()) {
+                                st.execute("SELECT * FROM Browsers");
+                                ResultSet res = st.getResultSet();
+                                if (!res.next()) {
+                                    System.out.println("Not created serials. Please, create signature.");
+                                    res.close();
+                                } else {
+                                    st.execute("UPDATE Browsers SET path = '" + fieldChrome.getText() + "' WHERE name = " + "'" + "chrome" + "'");
+                                    st.execute("UPDATE Browsers SET path = '" + fieldOpera.getText() + "' WHERE name = " + "'" + "opera" + "'");
+                                    st.execute("UPDATE Browsers SET path = '" + fieldIe.getText() + "' WHERE name = " + "'" + "ie" + "'");
+                                }
+                            }
+                        } catch (SQLException e1) {
+                            e1.printStackTrace();
+                        }
+
+                        frameMain.setSize(new Dimension(400, 500));
+                        frameMain.setVisible(true);
+                        frameSettings.setVisible(false);
+                    }
+                });
+
+
+            }
+        });
+
+        pickBrowse.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
+        JButton pickChrome = new JButton(new ImageIcon("other/chrome.jpg"));
+        pickChrome.setPreferredSize(new Dimension(38, 30));
+        c.fill = GridBagConstraints.NONE;
+        c.weightx = 0.2;
+        c.gridx = 0;
+        c.gridy = 0;
+        c.insets.set(3, 4, 3, 0);
+        pickBrowse.add(pickChrome, c);
+
+        JButton pickOpera = new JButton(new ImageIcon("other/opera.jpg"));
+        pickOpera.setPreferredSize(new Dimension(38, 30));
+        c.fill = GridBagConstraints.NONE;
+        c.weightx = 0.2;
+        c.gridx = 0;
+        c.gridy = 1;
+        c.insets.set(3, 4, 3, 0);
+        pickBrowse.add(pickOpera, c);
+
+        JButton pickIe = new JButton(new ImageIcon("other/IE.jpg"));
+        pickIe.setPreferredSize(new Dimension(38, 30));
+        c.fill = GridBagConstraints.NONE;
+        c.weightx = 0.2;
+        c.gridx = 0;
+        c.gridy = 2;
+        c.insets.set(3, 4, 3, 0);
+        pickBrowse.add(pickIe, c);
+
+        JButton pickDefault = new JButton("Default Browser");
+        pickIe.setPreferredSize(new Dimension(38, 30));
+        c.fill = GridBagConstraints.NONE;
+        c.gridwidth = -2;
+        c.weightx = 0.2;
+        c.gridx = 1;
+        c.gridy = 3;
+        c.insets.set(3, -49, -4, 1);
+        pickBrowse.add(pickDefault, c);
+
+        JLabel chromeAc = new JLabel(new ImageIcon("other/backgroundBrow.jpg"));
+        pickChrome.setPreferredSize(new Dimension(38, 30));
+        c.fill = GridBagConstraints.NONE;
+        c.weightx = 0.2;
+        c.gridx = 0;
+        c.gridy = 0;
+        c.insets.set(3, 4, 3, 0);
+        pickBrowse.add(chromeAc, c);
+
+
+        JLabel operaAc = new JLabel(new ImageIcon("other/backgroundBrow.jpg"));
+        pickChrome.setPreferredSize(new Dimension(38, 30));
+        c.fill = GridBagConstraints.NONE;
+        c.weightx = 0.2;
+        c.gridx = 0;
+        c.gridy = 1;
+        c.insets.set(3, 4, 3, 0);
+        pickBrowse.add(operaAc, c);
+
+        JLabel ieAc = new JLabel(new ImageIcon("other/backgroundBrow.jpg"));
+        pickChrome.setPreferredSize(new Dimension(38, 30));
+        c.fill = GridBagConstraints.NONE;
+        c.weightx = 0.2;
+        c.gridx = 0;
+        c.gridy = 2;
+        c.insets.set(3, 4, 3, 0);
+        pickBrowse.add(ieAc, c);
+
+        chromeAc.setVisible(false);
+        operaAc.setVisible(false);
+        ieAc.setVisible(false);
+
+
+
+        try {
+            try (Statement st = conn2.createStatement()) {
+                String link;
+                String name;
+                st.execute("SELECT * FROM Browsers");
+                ResultSet w = st.getResultSet();
+
+                while (w.next()) {
+                        name = w.getString("name");
+                        link = w.getString("path");
+                        if (Objects.equals(link, SerialsMethods.pathBrowsers("main"))){
+                            switch (name) {
+                                case "opera":
+                                    operaAc.setVisible(true);
+                                    break;
+                                case "chrome":
+                                    chromeAc.setVisible(true);
+                                    break;
+                                case "ie":
+                                    ieAc.setVisible(true);
+                                    break;
+                                case "":
+
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        }
+                }
+
+
+            }
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+
+
+        pickDefault.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    try (Statement st = conn2.createStatement()) {
+                        st.execute("UPDATE Browsers SET path = '" + "" + "' WHERE name = " + "'" + "main" + "'");
+                            operaAc.setVisible(false);
+                            ieAc.setVisible(false);
+                            chromeAc.setVisible(false);
+                        }
+
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+
+
+        pickChrome.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    try (Statement st = conn2.createStatement()) {
+                        st.execute("SELECT * FROM Browsers WHERE name = 'chrome'");
+                        ResultSet r = st.getResultSet();
+                        String path = r.getString("path");
+                        if (Objects.equals(path, "")) {
+                            JOptionPane.showMessageDialog(new JFrame(), "Please select the path to the browser on \"Settings\"");
+                        } else {
+                            st.execute("UPDATE Browsers SET path = '" + path + "' WHERE name = " + "'" + "main" + "'");
+                            operaAc.setVisible(false);
+                            ieAc.setVisible(false);
+                            chromeAc.setVisible(true);
+                        }
+                    }
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+        pickOpera.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    try (Statement st = conn2.createStatement()) {
+                        st.execute("SELECT * FROM Browsers WHERE name = 'opera'");
+                        ResultSet r = st.getResultSet();
+                        String path = r.getString("path");
+                        if (Objects.equals(path, "")) {
+                            JOptionPane.showMessageDialog(new JFrame(), "Please select the path to the browser on \"Settings\"");
+                        } else {
+                            st.execute("UPDATE Browsers SET path = '" + path + "' WHERE name = " + "'" + "main" + "'");
+                            operaAc.setVisible(true);
+                            ieAc.setVisible(false);
+                            chromeAc.setVisible(false);
+                        }
+                    }
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+        pickIe.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    try (Statement st = conn2.createStatement()) {
+                        st.execute("SELECT * FROM Browsers WHERE name = 'ie'");
+                        ResultSet r = st.getResultSet();
+                        String path = r.getString("path");
+                        if (Objects.equals(path, "")) {
+                            JOptionPane.showMessageDialog(new JFrame(), "Please select the path to the browser on \"Settings\"");
+                        } else {
+                            st.execute("UPDATE Browsers SET path = '" + path + "' WHERE name = " + "'" + "main" + "'");
+                            operaAc.setVisible(false);
+                            ieAc.setVisible(true);
+                            chromeAc.setVisible(false);
+                        }
+                    }
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
     }
 
     public static void main(String[] args) throws SQLException {
         DBConnect();
+        DBConnect2();
         new GUI();
     }
 }

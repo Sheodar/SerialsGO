@@ -1,5 +1,7 @@
 package methods;
 
+import java.io.IOException;
+import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -7,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Scanner;
 
-import static dataBase.ConnectionDB.conn;
+import static dataBase.ConnectionDB.*;
 import static utils.Utils.openerURL;
 
 public class SerialsMethods {
@@ -26,6 +28,25 @@ public class SerialsMethods {
         }
     }
 
+    public static String pathBrowsers(String name) throws SQLException{
+        String resultPATH = null;
+        try (Statement st = conn2.createStatement()) {
+            st.execute("SELECT * FROM Browsers");
+            ResultSet res = st.getResultSet();
+            if (!res.next()) {
+                System.out.println("Not created serials. Please, create signature.");
+                res.close();
+            } else {
+                st.execute("SELECT * FROM Browsers WHERE name = '"+name+"'");
+                ResultSet res2 = st.getResultSet();
+                while (res2.next()) {
+                    resultPATH = res2.getString("path");
+                }res2.close();
+            }
+        }
+        return resultPATH;
+    }
+
     public static ArrayList<String> allSerial() throws SQLException {
         ArrayList<String> resultSerials = new ArrayList<>();
         try (Statement st = conn.createStatement()) {
@@ -40,7 +61,8 @@ public class SerialsMethods {
                 while (res2.next()) {
                     String name = res2.getString("nameSerial");
                     resultSerials.add(name);
-                }
+
+                }res2.close();
             }
         }
         return resultSerials;
@@ -67,17 +89,37 @@ public class SerialsMethods {
         }
     }
 
-    public static void openSerial(Integer idSerial) throws SQLException {
+    public static void openSerial3(String name, String path) throws SQLException {
         try (Statement st = conn.createStatement()) {
-            st.execute("SELECT * FROM serialsURL");
+            st.execute("SELECT * FROM serialsURL WHERE name = " + name);
             ResultSet res = st.getResultSet();
             if (!res.next()) {
                 System.out.println("Not created serials. Please, create signature.");
             } else {
-                st.execute("SELECT * FROM serialsURL WHERE idSerial = " + idSerial);
-                res = st.getResultSet();
                 String URL = res.getString("URL");
-                openerURL(URL);
+                try {
+                    openerURL(URL, path);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+        }
+    }//st.execute("SELECT * FROM serialsURL WHERE idSerial = " + idSerial);
+    public static void openSerial(Integer idSerial, String path) throws SQLException {
+        try (Statement st = conn.createStatement()) {
+            st.execute("SELECT * FROM serialsURL WHERE idSerial = " + idSerial);
+            ResultSet res = st.getResultSet();
+            if (!res.next()) {
+                System.out.println("Not created serials. Please, create signature.");
+            } else {
+                String URL = res.getString("URL");
+                try {
+                    openerURL(URL, path);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -88,6 +130,7 @@ public class SerialsMethods {
             ResultSet res = st.getResultSet();
             if (!res.next()) {
                 System.out.println("Not created serials. Please, create signature.");
+                res.close();
             } else {
                 st.execute("UPDATE serialsURL SET nameSerial = '" + newName + "' WHERE nameSerial = " + "'"+oldName+"'");
             }
@@ -100,6 +143,7 @@ public class SerialsMethods {
             String[] checkUrlFirst = newURL.split("://");
             if (!res.next()) {
                 System.out.println("Not created serials. Please, create signature.");
+                res.close();
             } else {
                 if (Objects.equals(checkUrlFirst[0], "http")) {
                     st.execute("UPDATE serialsURL SET URL = '" + newURL + "' WHERE nameSerial = " + "'"+oldName+"'");
@@ -116,54 +160,4 @@ public class SerialsMethods {
             }
         }
     }
-
-    public void changeSerial(Integer idSerial) throws SQLException {
-        try (Statement st = conn.createStatement()) {
-            st.execute("SELECT * FROM serialsURL");
-            ResultSet res = st.getResultSet();
-            if (!res.next()) {
-                System.out.println("Not created serials. Please, create signature.");
-            } else {
-                Scanner printOpt = new Scanner(System.in);
-                String outConsoleCatOpt;
-                do {
-                    System.out.println("[1]- Change name; [2]- Change URL; [3]- Back;");
-                    outConsoleCatOpt = printOpt.nextLine();
-                    switch (outConsoleCatOpt) {
-                        case "1":
-                            System.out.println("Enter new name: ");
-                            String newName = printOpt.nextLine();
-                            st.execute("UPDATE serialsURL SET nameSerial = '" + newName + "' WHERE idSerial = " + idSerial);
-                            break;
-                        case "2":
-                            System.out.println("Enter new URL: ");
-                            String newURL = printOpt.nextLine();
-                            String[] checkUrlFirst = newURL.split("://");
-                            if (Objects.equals(checkUrlFirst[0], "http")) {
-                                st.execute("UPDATE serialsURL SET URL = '" + newURL + "' WHERE idSerial = " + idSerial);
-                            } else if (Objects.equals(checkUrlFirst[0], "https")) {
-                                st.execute("UPDATE serialsURL SET URL = '" + newURL + "' WHERE idSerial = " + idSerial);
-                            } else {
-                                String[] checkUrlSecond = newURL.split("\\.");
-                                if (Objects.equals(checkUrlSecond[0], "www")) {
-                                    st.execute("UPDATE serialsURL SET URL = '" + newURL + "' WHERE idSerial = " + idSerial);
-                                } else {
-                                    System.out.println("[Please. print correct URL (http://<URL> or https://<URL> or www.<URL>]");
-                                }
-                            }
-                            break;
-                        default:
-                            if (Objects.equals(outConsoleCatOpt, "3")) {
-                                break;
-                            }
-                            System.out.println("[Invalid command]");
-                            break;
-                    }
-                }
-                while (!Objects.equals(outConsoleCatOpt, "3"));
-            }
-        }
-    }
-
-
 }
