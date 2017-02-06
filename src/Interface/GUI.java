@@ -8,13 +8,16 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 import static dataBase.ConnectionDB.*;
+import static utils.Utils.openerURL;
 
 public class GUI extends JFrame {
     public static int buttonSerial = 0;
@@ -40,6 +43,8 @@ public class GUI extends JFrame {
     private static JTextField fieldOpera = new JTextField();
     private static JTextField fieldChrome = new JTextField();
     private static JTextField fieldIe = new JTextField();
+    private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    private static JFrame frameMain = new JFrame();
 
     private void printButton(ArrayList<String> allSerialsName) {
         for (int x = 0; x < allSerialsName.size(); x++) {
@@ -81,18 +86,16 @@ public class GUI extends JFrame {
 
 
     private GUI() {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int sizeWidth = 400;
+        int sizeWidth = 420;
         int sizeHeight = 550;
         int locationX = (screenSize.width - sizeWidth) / 2;
         int locationY = (screenSize.height - sizeHeight) / 2;
 
-        JFrame frameMain = new JFrame();
         frameMain.setContentPane(mainPanel);
         frameMain.setTitle("My Serials");
         frameMain.setVisible(true);
         frameMain.setBounds(locationX, locationY, sizeWidth, sizeHeight);
-        frameMain.setMinimumSize(new Dimension(400, 650));
+        frameMain.setMinimumSize(new Dimension(420, 650));
         frameMain.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         addSerialsPanel.setVisible(false);
         createAllSerials();
@@ -511,72 +514,80 @@ public class GUI extends JFrame {
         JButton pickChrome = new JButton(new ImageIcon("other/chrome.jpg"));
         pickChrome.setPreferredSize(new Dimension(38, 30));
         c.fill = GridBagConstraints.NONE;
+        c.gridwidth = 2;
         c.weightx = 0.2;
         c.gridx = 0;
         c.gridy = 0;
-        c.insets.set(3, 4, 3, 0);
+        c.insets.set(3, 0, 3, 110);
         pickBrowse.add(pickChrome, c);
 
         JButton pickOpera = new JButton(new ImageIcon("other/opera.jpg"));
         pickOpera.setPreferredSize(new Dimension(38, 30));
         c.fill = GridBagConstraints.NONE;
         c.weightx = 0.2;
+        c.gridwidth = 2;
         c.gridx = 0;
         c.gridy = 1;
-        c.insets.set(3, 4, 3, 0);
+        c.insets.set(3, 0, 3, 110);
         pickBrowse.add(pickOpera, c);
 
         JButton pickIe = new JButton(new ImageIcon("other/IE.jpg"));
         pickIe.setPreferredSize(new Dimension(38, 30));
         c.fill = GridBagConstraints.NONE;
         c.weightx = 0.2;
+        c.gridwidth = 2;
         c.gridx = 0;
         c.gridy = 2;
-        c.insets.set(3, 4, 3, 0);
+        c.insets.set(3, 0, 3, 110);
         pickBrowse.add(pickIe, c);
 
         JButton pickDefault = new JButton("Default Browser");
         pickIe.setPreferredSize(new Dimension(38, 30));
         c.fill = GridBagConstraints.NONE;
-        c.gridwidth = -2;
+        c.gridwidth = 2;
         c.weightx = 0.2;
-        c.gridx = 1;
+        c.gridx = 0;
         c.gridy = 3;
-        c.insets.set(3, -49, -4, 1);
+        c.insets.set(3, -23, -4, 2);
         pickBrowse.add(pickDefault, c);
 
         JLabel chromeAc = new JLabel(new ImageIcon("other/backgroundBrow.jpg"));
         pickChrome.setPreferredSize(new Dimension(38, 30));
         c.fill = GridBagConstraints.NONE;
+        c.gridheight = 4;
+        c.gridwidth = 2;
         c.weightx = 0.2;
         c.gridx = 0;
         c.gridy = 0;
-        c.insets.set(3, 4, 3, 0);
+        c.insets.set(0, 0, 96, 110);
         pickBrowse.add(chromeAc, c);
 
 
         JLabel operaAc = new JLabel(new ImageIcon("other/backgroundBrow.jpg"));
         pickChrome.setPreferredSize(new Dimension(38, 30));
         c.fill = GridBagConstraints.NONE;
+        c.gridheight = 3;
+        c.gridwidth = 2;
         c.weightx = 0.2;
         c.gridx = 0;
         c.gridy = 1;
-        c.insets.set(3, 4, 3, 0);
+        c.insets.set(0, 0, 60, 110);
         pickBrowse.add(operaAc, c);
 
         JLabel ieAc = new JLabel(new ImageIcon("other/backgroundBrow.jpg"));
         pickChrome.setPreferredSize(new Dimension(38, 30));
         c.fill = GridBagConstraints.NONE;
+        c.gridheight = 2;
+        c.gridwidth = 2;
         c.weightx = 0.2;
         c.gridx = 0;
         c.gridy = 2;
-        c.insets.set(3, 4, 3, 0);
+        c.insets.set(0, 0, 24, 110);
         pickBrowse.add(ieAc, c);
 
         chromeAc.setVisible(false);
         operaAc.setVisible(false);
         ieAc.setVisible(false);
-
 
 
         try {
@@ -587,34 +598,34 @@ public class GUI extends JFrame {
                 ResultSet w = st.getResultSet();
 
                 while (w.next()) {
-                        name = w.getString("name");
-                        link = w.getString("path");
-                        if (Objects.equals(link, SerialsMethods.pathBrowsers("main"))){
-                            switch (name) {
-                                case "opera":
-                                    operaAc.setVisible(true);
-                                    break;
-                                case "chrome":
-                                    chromeAc.setVisible(true);
-                                    break;
-                                case "ie":
-                                    ieAc.setVisible(true);
-                                    break;
-                                case "":
+                    name = w.getString("name");
+                    link = w.getString("path");
+                    if (Objects.equals(link, SerialsMethods.pathBrowsers("main"))) {
+                        switch (name) {
+                            case "opera":
+                                operaAc.setVisible(true);
+                                break;
+                            case "chrome":
+                                chromeAc.setVisible(true);
+                                break;
+                            case "ie":
+                                ieAc.setVisible(true);
+                                break;
+                            case "":
 
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
+                                break;
+                            default:
+                                break;
                         }
+                        break;
+                    }
                 }
 
 
             }
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        }
 
 
         pickDefault.addActionListener(new ActionListener() {
@@ -623,17 +634,16 @@ public class GUI extends JFrame {
                 try {
                     try (Statement st = conn2.createStatement()) {
                         st.execute("UPDATE Browsers SET path = '" + "" + "' WHERE name = " + "'" + "main" + "'");
-                            operaAc.setVisible(false);
-                            ieAc.setVisible(false);
-                            chromeAc.setVisible(false);
-                        }
+                        operaAc.setVisible(false);
+                        ieAc.setVisible(false);
+                        chromeAc.setVisible(false);
+                    }
 
                 } catch (SQLException e1) {
                     e1.printStackTrace();
                 }
             }
         });
-
 
 
         pickChrome.addActionListener(new ActionListener() {
@@ -705,8 +715,142 @@ public class GUI extends JFrame {
     }
 
     public static void main(String[] args) throws SQLException {
-        DBConnect();
         DBConnect2();
-        new GUI();
+        String urll = "jdbc:sqlite:serialsDB.db";
+        conn = null;
+        File file = new File("serialsDB.db");
+
+        File file2;
+        String url;
+        try (Statement st = conn2.createStatement()) {
+            st.execute("SELECT * FROM pathSerialsDB WHERE id = 1");
+            ResultSet r = st.getResultSet();
+            url = r.getString("path");
+            file2 = new File(url);
+        }
+        if (file.exists() && file.isFile()) {
+            try {
+                conn = DriverManager.getConnection(urll);
+                DBConnect2();
+                new GUI();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else if (file2.exists() && file2.isFile()) {
+            try {
+                conn = DriverManager.getConnection("jdbc:sqlite:" + url);
+                DBConnect2();
+                new GUI();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            int sizeWidth = 300;
+            int sizeHeight = 140;
+            int locationX = (screenSize.width - sizeWidth) / 2;
+            int locationY = (screenSize.height - sizeHeight) / 2;
+            JFrame frameErrorDB = new JFrame();
+            frameErrorDB.setTitle("Error");
+            frameErrorDB.setBounds(locationX, locationY, sizeWidth, sizeHeight);
+            frameErrorDB.setMinimumSize(new Dimension(300, 140));
+            frameErrorDB.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+//            frameMain.setVisible(false);
+            frameErrorDB.setVisible(true);
+            JPanel panelErrorDB = new JPanel(new GridBagLayout());
+            frameErrorDB.setContentPane(panelErrorDB);
+            GridBagConstraints c = new GridBagConstraints();
+
+            Font font1 = new Font("Verdana", Font.PLAIN, 9);
+
+            JLabel mainTextErrorDB = new JLabel("<html><p align=\"center\">Не установлено соединение с базой данных</p>" +
+                    "<p align=\"center\">Поместите файл \"SerialsDB.db\"в папку с  .ехе</p>" +
+                    "<p align=\"center\">или укажите путь к файлу</p></html>");
+            c.fill = GridBagConstraints.CENTER;
+            c.weightx = 0.5;
+            c.gridx = 0;
+            c.gridy = 0;
+            c.insets.set(3, 0, 0, 0);
+            panelErrorDB.add(mainTextErrorDB, c);
+
+            JLabel dlTextErrorDB = new JLabel("<html><p align=\"center\">(Если файл удален, его можно скачать)</p></html>");
+            dlTextErrorDB.setFont(font1);
+            c.fill = GridBagConstraints.CENTER;
+            c.weightx = 0.5;
+            c.gridx = 0;
+            c.gridy = 1;
+            c.insets.set(1, 0, 3, 0);
+            panelErrorDB.add(dlTextErrorDB, c);
+
+            JButton downloadDB = new JButton("Download");
+            downloadDB.setPreferredSize(new Dimension(38, 30));
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.gridwidth = 3;
+            c.weightx = 0.2;
+            c.gridx = -1;
+            c.gridy = 2;
+            c.insets.set(3, 20, 2, 150);
+            panelErrorDB.add(downloadDB, c);
+
+            JButton specifyPath = new JButton("Specify path");
+            specifyPath.setPreferredSize(new Dimension(38, 30));
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.gridwidth = 2;
+            c.weightx = 0.2;
+            c.gridx = 0;
+            c.gridy = 2;
+            c.insets.set(3, 150, 2, 20);
+            panelErrorDB.add(specifyPath, c);
+            frameErrorDB.setPreferredSize(new Dimension(300, 140));
+            frameErrorDB.setPreferredSize(new Dimension(300, 140));
+            frameErrorDB.setResizable(false);
+
+            downloadDB.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        openerURL("https://github.com/Sheodar/SerialsGO", "1");
+                    } catch (IOException e1) {
+                        JOptionPane.showMessageDialog(new JFrame(), "Need Default Browser");
+                        e1.printStackTrace();
+                    }
+                }
+            });
+
+            specifyPath.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    JFileChooser fileopen = new JFileChooser();
+                    int ret = fileopen.showDialog(null, "Открыть файл");
+                    if (ret == JFileChooser.APPROVE_OPTION) {
+                        File file = fileopen.getSelectedFile();
+                        String path = file.getAbsolutePath();
+                        String[] pathMass = path.split("\\\\");
+                        String fileName = "serialsDB.db";
+                        if (Objects.equals(pathMass[pathMass.length - 1], fileName)) {
+                            try {
+                                try (Statement st = conn2.createStatement()) {
+                                    st.execute("UPDATE pathSerialsDB SET path = '" + path + "' WHERE id = 1");
+                                    String urll = "jdbc:sqlite:" + path;
+                                    conn = null;
+                                    File file1 = new File(path);
+                                    if (file1.exists() && file1.isFile()) {
+                                        try {
+                                            conn = DriverManager.getConnection(urll);
+                                            frameErrorDB.setVisible(false);
+                                            new GUI();
+                                        } catch (SQLException e1) {
+                                            e1.printStackTrace();
+                                        }
+                                    }
+                                }
+                            } catch (SQLException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                    }
+                }
+            });
+
+        }
     }
 }
