@@ -13,14 +13,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 
 import static dataBase.ConnectionDB.*;
 import static utils.Utils.openerURL;
 
 public class GUI extends JFrame {
-    public static int buttonSerial = 0;
     private JPanel mainPanel;
     private JButton addSerial;
     private JPanel allSerials;
@@ -38,6 +36,7 @@ public class GUI extends JFrame {
     private JLabel clickTo;
     private JButton settingsButton;
     private JPanel pickBrowse;
+    private JPanel rPanel;
     private JButton pickIe;
     private ArrayList<JButton> manyButton = new ArrayList<>();
     private static JTextField fieldOpera = new JTextField();
@@ -45,6 +44,7 @@ public class GUI extends JFrame {
     private static JTextField fieldIe = new JTextField();
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private static JFrame frameMain = new JFrame();
+    private static ArrayList<String> allSerialsName = new ArrayList<>();
 
     private void printButton(ArrayList<String> allSerialsName) {
         for (int x = 0; x < allSerialsName.size(); x++) {
@@ -52,11 +52,10 @@ public class GUI extends JFrame {
             manyButton.add(x, new JButton(allSerialsName.get(x)));
             c.fill = GridBagConstraints.HORIZONTAL;
             c.weightx = 0.5;
-            c.gridx = 1;
+            c.gridx = 0;
             c.insets.set(3, 3, 3, 3);
             allSerials.add(manyButton.get(x), c);
             manyButton.get(x).setAlignmentX(JComponent.CENTER_ALIGNMENT);
-            buttonSerial++;
             int finalX = x;
             manyButton.get(x).addActionListener(new ActionListener() {
                 @Override
@@ -82,15 +81,16 @@ public class GUI extends JFrame {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
     }
 
 
-    private GUI() {
-        int sizeWidth = 420;
+    private GUI() throws SQLException {
+        allSerialsName = SerialsMethods.allSerial();
+        int sizeWidth = 350;
         int sizeHeight = 550;
         int locationX = (screenSize.width - sizeWidth) / 2;
         int locationY = (screenSize.height - sizeHeight) / 2;
-
         frameMain.setContentPane(mainPanel);
         frameMain.setTitle("My Serials");
         frameMain.setVisible(true);
@@ -98,7 +98,10 @@ public class GUI extends JFrame {
         frameMain.setMinimumSize(new Dimension(420, 650));
         frameMain.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         addSerialsPanel.setVisible(false);
+        rPanel.setVisible(true);
+
         createAllSerials();
+
 
         Font font1 = new Font("Verdana", Font.PLAIN, 9);
         Font font2 = new Font("Verdana", Font.BOLD, 14);
@@ -109,6 +112,7 @@ public class GUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 addSerialsPanel.setVisible(true);
+                rPanel.setVisible(false);
             }
         });
 
@@ -118,6 +122,7 @@ public class GUI extends JFrame {
                 addNameSerial.setText("");
                 addURLSerial.setText("");
                 addSerialsPanel.setVisible(false);
+                rPanel.setVisible(true);
             }
         });
 
@@ -140,12 +145,40 @@ public class GUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
                     SerialsMethods.addSerial(addNameSerial.getText(), addURLSerial.getText());
-                    addNameSerial.setText("");
-                    addURLSerial.setText("");
                     addSerialsPanel.setVisible(false);
+                    rPanel.setVisible(true);
+                    int x = manyButton.size();
+                    GridBagConstraints c = new GridBagConstraints();
+                    manyButton.add(x, new JButton(addNameSerial.getText()));
+                    c.fill = GridBagConstraints.HORIZONTAL;
+                    c.weightx = 0.5;
+                    c.gridx = 1;
+                    c.insets.set(3, 3, 3, 3);
+                    allSerials.add(manyButton.get(x), c);
+                    allSerialsName.add(addNameSerial.getText());
+                    manyButton.get(x).setAlignmentX(JComponent.CENTER_ALIGNMENT);
+                    manyButton.get(x).addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            try {
+                                String path = SerialsMethods.pathBrowsers("main");
+                                if (Objects.equals(path, "")) {
+                                    path = "1";
+                                }
+                                SerialsMethods.openSerial(allSerialsName.get(x), path);
+                            } catch (SQLException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                    });
+
+                    addSerialsPanel.revalidate();
                     allSerials.removeAll();
                     printButton(SerialsMethods.allSerial());
+                    allSerials.revalidate();
                     frameMain.setSize(new Dimension(400, 500));
+                    addNameSerial.setText("");
+                    addURLSerial.setText("");
                 } catch (SQLException e1) {
                     e1.printStackTrace();
                 }
@@ -155,7 +188,6 @@ public class GUI extends JFrame {
 
         changeSerial.addActionListener(new ActionListener() {
             JComboBox<String> comboBox;
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int sizeWidth = 420;
@@ -232,6 +264,7 @@ public class GUI extends JFrame {
                 c.ipadx = 70;
                 c.weightx = 1;
                 c.gridx = 1;
+                c.gridx = 1;
                 c.gridy = 2;
                 c.gridwidth = 2;
                 c.insets.set(3, 3, 3, 3);
@@ -244,7 +277,7 @@ public class GUI extends JFrame {
                 c.gridx = 1;
                 c.gridy = 3;
                 c.gridwidth = 2;
-                c.insets.set(3, 3, 3, 157);
+                c.insets.set(3, 3, 3, 190);
                 panelChange.add(cancel, c);
 
                 delete.addActionListener(new ActionListener() {
@@ -269,9 +302,10 @@ public class GUI extends JFrame {
                 cancel.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+
                         allSerials.removeAll();
                         try {
-                            printButton(SerialsMethods.allSerial());
+                            printButton(SerialsMethods.allSerial());  //фикс.
                         } catch (SQLException e1) {
                             e1.printStackTrace();
                         }

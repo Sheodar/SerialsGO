@@ -21,12 +21,10 @@ public class Utils {
             } catch (URISyntaxException | IOException e) {
                 e.printStackTrace();
             }
-        }else {
+        }else{
             String request = String.format("%s %s", path, URL);
             Runtime runtime = Runtime.getRuntime();
             runtime.exec(request);
         }
-
-
     }
 }

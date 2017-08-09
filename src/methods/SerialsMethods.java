@@ -88,25 +88,6 @@ public class SerialsMethods {
             }
         }
     }
-
-    public static void openSerial3(String name, String path) throws SQLException {
-        try (Statement st = conn.createStatement()) {
-            st.execute("SELECT * FROM serialsURL WHERE name = " + name);
-            ResultSet res = st.getResultSet();
-            if (!res.next()) {
-                System.out.println("Not created serials. Please, create signature.");
-            } else {
-                String URL = res.getString("URL");
-                try {
-                    openerURL(URL, path);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-
-        }
-    }//st.execute("SELECT * FROM serialsURL WHERE idSerial = " + idSerial);
     public static void openSerial(String name, String path) throws SQLException {
         try (Statement st = conn.createStatement()) {
             st.execute("SELECT * FROM serialsURL WHERE nameSerial = '" + name+"'");

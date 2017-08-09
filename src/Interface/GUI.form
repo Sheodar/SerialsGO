@@ -2,14 +2,16 @@
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="Interface.GUI">
   <grid id="27dc6" binding="mainPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
     <constraints>
-      <xy x="20" y="20" width="500" height="400"/>
+      <xy x="20" y="20" width="504" height="496"/>
     </constraints>
-    <properties/>
+    <properties>
+      <minimumSize width="400" height="496"/>
+    </properties>
     <border type="none"/>
     <children>
       <grid id="b2ef5" binding="addSerialsPanel" layout-manager="GridLayoutManager" row-count="6" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
-        <constraints border-constraint="East"/>
+        <constraints border-constraint="First"/>
         <properties/>
         <border type="none"/>
         <children>
@@ -168,24 +170,15 @@
           </component>
         </children>
       </grid>
-      <grid id="435a" layout-manager="GridLayoutManager" row-count="4" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-        <margin top="0" left="0" bottom="0" right="0"/>
+      <grid id="435a" binding="rPanel" layout-manager="GridBagLayout">
         <constraints border-constraint="Center"/>
         <properties/>
         <border type="none"/>
         <children>
-          <grid id="fb22b" binding="allSerials" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-            <margin top="0" left="0" bottom="0" right="0"/>
-            <constraints>
-              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="1" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties/>
-            <border type="none"/>
-            <children/>
-          </grid>
           <component id="a25db" class="javax.swing.JLabel" binding="youSerials">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="2" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="1.0" weighty="0.0"/>
             </constraints>
             <properties>
               <text value="You'r Serials"/>
@@ -194,6 +187,7 @@
           <component id="95a89" class="javax.swing.JLabel" binding="clickTo">
             <constraints>
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="1" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="1.0" weighty="0.0"/>
             </constraints>
             <properties>
               <text value="(click to open)"/>
@@ -202,11 +196,36 @@
           <grid id="c66ec" binding="pickBrowse" layout-manager="GridBagLayout">
             <constraints>
               <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="10" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="1.0" weighty="0.0"/>
             </constraints>
             <properties/>
             <border type="none"/>
             <children/>
           </grid>
+          <scrollpane id="7de7d">
+            <constraints>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <gridbag top="0" left="70" bottom="0" right="70" weightx="1.0" weighty="1.0"/>
+            </constraints>
+            <properties>
+              <autoscrolls value="false"/>
+            </properties>
+            <clientProperties>
+              <html.disable class="java.lang.Boolean" value="false"/>
+            </clientProperties>
+            <border type="empty"/>
+            <children>
+              <grid id="fb22b" binding="allSerials" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="true" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
+                <constraints/>
+                <properties>
+                  <autoscrolls value="false"/>
+                </properties>
+                <border type="none"/>
+                <children/>
+              </grid>
+            </children>
+          </scrollpane>
         </children>
       </grid>
     </children>
