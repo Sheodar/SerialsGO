@@ -47,6 +47,51 @@ public class SerialsMethods {
         return resultPATH;
     }
 
+    public static String getComment (String name) throws SQLException{
+        String comm = null;
+        try (Statement st = conn.createStatement()) {
+            st.execute("SELECT * FROM serialsURL");
+            ResultSet res = st.getResultSet();
+            if (!res.next()) {
+                System.out.println("Not created serials. Please, create signature.");
+                res.close();
+            } else {
+                st.execute("SELECT * FROM serialsURL WHERE nameSerial = '"+name+"'");
+                ResultSet res2 = st.getResultSet();
+                while (res2.next()) {
+                    comm = res2.getString("comment");
+
+                }res2.close();
+            }
+        }
+        return comm;
+    }
+
+    public static void saveComment (String name, String comment) throws SQLException{
+        String comm = null;
+        try (Statement st = conn.createStatement()) {
+            st.execute("SELECT * FROM serialsURL");
+            ResultSet res = st.getResultSet();
+            if (!res.next()) {
+                System.out.println("Not created serials. Please, create signature.");
+                res.close();
+            } else {
+                st.execute("SELECT * FROM serialsURL");
+                ResultSet res2 = st.getResultSet();
+                while (res2.next()) {
+                    st.execute("UPDATE serialsURL SET comment = '" + comment + "' WHERE nameSerial = " + "'"+name+"'");
+                }res2.close();
+            }
+        }
+    }
+
+
+
+
+
+
+
+
     public static ArrayList<String> allSerial() throws SQLException {
         ArrayList<String> resultSerials = new ArrayList<>();
         try (Statement st = conn.createStatement()) {
@@ -90,7 +135,7 @@ public class SerialsMethods {
     }
     public static void openSerial(String name, String path) throws SQLException {
         try (Statement st = conn.createStatement()) {
-            st.execute("SELECT * FROM serialsURL WHERE nameSerial = '" + name+"'");
+            st.execute("SELECT * FROM serialsURL WHERE nameSerial = '" + name + "'");
             ResultSet res = st.getResultSet();
             if (!res.next()) {
                 System.out.println("Not created serials. Please, create signature.");
@@ -104,6 +149,9 @@ public class SerialsMethods {
             }
         }
     }
+
+
+
 
     public static void changeSerialName(String newName, String oldName) throws SQLException {
         try (Statement st = conn.createStatement()) {

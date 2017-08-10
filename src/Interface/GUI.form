@@ -96,8 +96,7 @@
           </component>
         </children>
       </grid>
-      <grid id="71950" binding="BotBar" layout-manager="GridLayoutManager" row-count="3" column-count="7" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-        <margin top="0" left="0" bottom="0" right="0"/>
+      <grid id="71950" binding="BotBar" layout-manager="GridBagLayout">
         <constraints border-constraint="South"/>
         <properties/>
         <border type="none"/>
@@ -105,6 +104,7 @@
           <component id="2c10d" class="javax.swing.JButton" binding="UPButton" default-binding="true">
             <constraints>
               <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag top="0" left="5" bottom="5" right="10" weightx="0.0" weighty="0.0"/>
             </constraints>
             <properties>
               <text value="UP"/>
@@ -113,24 +113,16 @@
           <component id="14aa4" class="javax.swing.JButton" binding="addSerial">
             <constraints>
               <grid row="0" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag top="0" left="10" bottom="5" right="5" weightx="1.0" weighty="0.0"/>
             </constraints>
             <properties>
               <text value="ADD New Serial"/>
             </properties>
           </component>
-          <vspacer id="17f97">
-            <constraints>
-              <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
-            </constraints>
-          </vspacer>
-          <hspacer id="195c0">
-            <constraints>
-              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-          </hspacer>
           <component id="d3407" class="javax.swing.JButton" binding="changeSerial">
             <constraints>
               <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag top="0" left="5" bottom="5" right="5" weightx="0.0" weighty="0.0"/>
             </constraints>
             <properties>
               <text value="Change"/>
@@ -139,6 +131,7 @@
           <component id="9f83b" class="javax.swing.JButton" binding="settingsButton" default-binding="true">
             <constraints>
               <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag top="0" left="5" bottom="5" right="5" weightx="0.0" weighty="0.0"/>
             </constraints>
             <properties>
               <text value="Settings"/>
@@ -147,6 +140,7 @@
           <component id="da110" class="javax.swing.JLabel">
             <constraints>
               <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="1.0" weighty="0.0"/>
             </constraints>
             <properties>
               <text value=""/>
@@ -155,6 +149,7 @@
           <component id="ea423" class="javax.swing.JLabel">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
             </constraints>
             <properties>
               <text value=""/>
@@ -163,6 +158,7 @@
           <component id="f182b" class="javax.swing.JLabel">
             <constraints>
               <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
             </constraints>
             <properties>
               <text value=""/>
@@ -177,7 +173,7 @@
         <children>
           <component id="a25db" class="javax.swing.JLabel" binding="youSerials">
             <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="2" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="0" row-span="1" col-span="4" vsize-policy="0" hsize-policy="0" anchor="2" fill="0" indent="0" use-parent-layout="false"/>
               <gridbag weightx="1.0" weighty="0.0"/>
             </constraints>
             <properties>
@@ -186,7 +182,7 @@
           </component>
           <component id="95a89" class="javax.swing.JLabel" binding="clickTo">
             <constraints>
-              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="1" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="1" column="0" row-span="1" col-span="4" vsize-policy="0" hsize-policy="0" anchor="1" fill="0" indent="0" use-parent-layout="false"/>
               <gridbag weightx="1.0" weighty="0.0"/>
             </constraints>
             <properties>
@@ -195,7 +191,7 @@
           </component>
           <grid id="c66ec" binding="pickBrowse" layout-manager="GridBagLayout">
             <constraints>
-              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="10" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="10" fill="0" indent="0" use-parent-layout="false"/>
               <gridbag weightx="1.0" weighty="0.0"/>
             </constraints>
             <properties/>
@@ -204,7 +200,7 @@
           </grid>
           <scrollpane id="7de7d">
             <constraints>
-              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <grid row="2" column="0" row-span="1" col-span="4" vsize-policy="7" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
               <gridbag top="0" left="70" bottom="0" right="70" weightx="1.0" weighty="1.0"/>
             </constraints>
             <properties>
@@ -226,6 +222,67 @@
               </grid>
             </children>
           </scrollpane>
+          <grid id="ec48d" binding="workPanel" layout-manager="GridBagLayout">
+            <constraints>
+              <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="6" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag top="0" left="0" bottom="7" right="10" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <background color="-3421237"/>
+              <minimumSize width="200" height="130"/>
+              <visible value="false"/>
+            </properties>
+            <border type="line"/>
+            <children>
+              <component id="233b" class="javax.swing.JButton" binding="openSerial">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="5" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag top="8" left="0" bottom="0" right="0" weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <label value="OPEN"/>
+                  <minimumSize width="60" height="32"/>
+                  <preferredSize width="110" height="20"/>
+                  <text value="OPEN"/>
+                </properties>
+              </component>
+              <scrollpane id="8725b">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <maximumSize width="1000" height="1000"/>
+                  <minimumSize width="185" height="80"/>
+                  <preferredSize width="185" height="90"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="2ca5b" class="javax.swing.JTextArea" binding="comment">
+                    <constraints/>
+                    <properties>
+                      <background color="-1"/>
+                      <lineWrap value="true"/>
+                      <maximumSize width="200" height="80"/>
+                      <minimumSize width="200" height="80"/>
+                      <text value=""/>
+                      <wrapStyleWord value="true"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+              <component id="aa86" class="javax.swing.JButton" binding="saveComm">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag top="8" left="0" bottom="0" right="0" weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <preferredSize width="66" height="20"/>
+                  <text value="Save"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
         </children>
       </grid>
     </children>

@@ -4,6 +4,7 @@ package Interface;
 import methods.SerialsMethods;
 
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -16,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import static dataBase.ConnectionDB.*;
+import static methods.SerialsMethods.getComment;
+import static methods.SerialsMethods.saveComment;
 import static utils.Utils.openerURL;
 
 public class GUI extends JFrame {
@@ -37,6 +40,10 @@ public class GUI extends JFrame {
     private JButton settingsButton;
     private JPanel pickBrowse;
     private JPanel rPanel;
+    private JPanel workPanel;
+    private JButton openSerial;
+    private JTextArea comment;
+    private JButton saveComm;
     private JButton pickIe;
     private ArrayList<JButton> manyButton = new ArrayList<>();
     private static JTextField fieldOpera = new JTextField();
@@ -45,6 +52,7 @@ public class GUI extends JFrame {
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private static JFrame frameMain = new JFrame();
     private static ArrayList<String> allSerialsName = new ArrayList<>();
+    private GridBagConstraints c = new GridBagConstraints();
 
     private void printButton(ArrayList<String> allSerialsName) {
         for (int x = 0; x < allSerialsName.size(); x++) {
@@ -60,12 +68,13 @@ public class GUI extends JFrame {
             manyButton.get(x).addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    workPanel.setVisible(true);
+                    if (openSerial.getActionListeners().length != 0)
+                    openSerial.removeActionListener(openSerial.getActionListeners()[0]);
+                    if (saveComm.getActionListeners().length != 0)
+                        saveComm.removeActionListener(saveComm.getActionListeners()[0]);
                     try {
-                        String path = SerialsMethods.pathBrowsers("main");
-                        if (Objects.equals(path, "")) {
-                            path = "1";
-                        }
-                        SerialsMethods.openSerial(allSerialsName.get(finalX), path);
+                        createPanelInfo(allSerialsName.get(finalX));
                     } catch (SQLException e1) {
                         e1.printStackTrace();
                     }
@@ -73,6 +82,41 @@ public class GUI extends JFrame {
             });
         }
     }
+
+    private void createPanelInfo(String name) throws SQLException {
+        comment.setText(getComment(name));
+        ActionListener open = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String path = SerialsMethods.pathBrowsers("main");
+                    if (Objects.equals(path, "")) {
+                        path = "1";
+                    }
+                    SerialsMethods.openSerial(name, path);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+                workPanel.setVisible(false);
+                openSerial.removeActionListener(openSerial.getActionListeners()[0]);
+            }
+        };
+        ActionListener save = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    saveComment(name, comment.getText());
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+                workPanel.setVisible(false);
+                saveComm.removeActionListener(saveComm.getActionListeners()[0]);
+            }
+        };
+        openSerial.addActionListener(open);
+        saveComm.addActionListener(save);
+    }
+
 
     private void createAllSerials() {
         allSerials.setLayout(new GridBagLayout());
@@ -99,15 +143,12 @@ public class GUI extends JFrame {
         frameMain.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         addSerialsPanel.setVisible(false);
         rPanel.setVisible(true);
-
         createAllSerials();
-
 
         Font font1 = new Font("Verdana", Font.PLAIN, 9);
         Font font2 = new Font("Verdana", Font.BOLD, 14);
         clickTo.setFont(font1);
         youSerials.setFont(font2);
-
         addSerial.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -204,7 +245,6 @@ public class GUI extends JFrame {
                 frameChange.setVisible(true);
                 JPanel panelChange = new JPanel(new GridBagLayout());
                 frameChange.setContentPane(panelChange);
-                GridBagConstraints c = new GridBagConstraints();
                 try {
                     comboBox = new JComboBox<>(SerialsMethods.allSerial().toArray(new String[SerialsMethods.allSerial().size()]));
                     c.weightx = 1;
@@ -746,6 +786,7 @@ public class GUI extends JFrame {
                 }
             }
         });
+
     }
 
     public static void main(String[] args) throws SQLException {
