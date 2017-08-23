@@ -1,13 +1,11 @@
 package methods;
 
 import java.io.IOException;
-import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Scanner;
 
 import static dataBase.ConnectionDB.*;
 import static utils.Utils.openerURL;
@@ -68,7 +66,6 @@ public class SerialsMethods {
     }
 
     public static void saveComment (String name, String comment) throws SQLException{
-        String comm = null;
         try (Statement st = conn.createStatement()) {
             st.execute("SELECT * FROM serialsURL");
             ResultSet res = st.getResultSet();
@@ -84,13 +81,6 @@ public class SerialsMethods {
             }
         }
     }
-
-
-
-
-
-
-
 
     public static ArrayList<String> allSerial() throws SQLException {
         ArrayList<String> resultSerials = new ArrayList<>();

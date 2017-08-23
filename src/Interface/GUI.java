@@ -4,7 +4,6 @@ package Interface;
 import methods.SerialsMethods;
 
 import javax.swing.*;
-import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -44,6 +43,7 @@ public class GUI extends JFrame {
     private JButton openSerial;
     private JTextArea comment;
     private JButton saveComm;
+    private JScrollPane scrollSer;
     private JButton pickIe;
     private ArrayList<JButton> manyButton = new ArrayList<>();
     private static JTextField fieldOpera = new JTextField();
@@ -64,7 +64,9 @@ public class GUI extends JFrame {
             c.insets.set(3, 3, 3, 3);
             allSerials.add(manyButton.get(x), c);
             manyButton.get(x).setAlignmentX(JComponent.CENTER_ALIGNMENT);
+            manyButton.get(x).setFocusPainted(false);
             int finalX = x;
+
             manyButton.get(x).addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -73,8 +75,13 @@ public class GUI extends JFrame {
                     openSerial.removeActionListener(openSerial.getActionListeners()[0]);
                     if (saveComm.getActionListeners().length != 0)
                         saveComm.removeActionListener(saveComm.getActionListeners()[0]);
+                    manyButton.get(finalX).setBackground(Color.decode("#90EE90"));
+                    for(int x = 0; x<manyButton.size();x++){
+                        if(x!=finalX)
+                            manyButton.get(x).setBackground(null);
+                    }
                     try {
-                        createPanelInfo(allSerialsName.get(finalX));
+                        createPanelInfo(allSerialsName.get(finalX), finalX);
                     } catch (SQLException e1) {
                         e1.printStackTrace();
                     }
@@ -83,7 +90,7 @@ public class GUI extends JFrame {
         }
     }
 
-    private void createPanelInfo(String name) throws SQLException {
+        private void createPanelInfo(String name, int id) throws SQLException {
         comment.setText(getComment(name));
         ActionListener open = new ActionListener() {
             @Override
@@ -97,7 +104,8 @@ public class GUI extends JFrame {
                 } catch (SQLException e1) {
                     e1.printStackTrace();
                 }
-                workPanel.setVisible(false);
+//                workPanel.setVisible(false);
+//                manyButton.get(id).setBackground(null);
                 openSerial.removeActionListener(openSerial.getActionListeners()[0]);
             }
         };
@@ -110,6 +118,7 @@ public class GUI extends JFrame {
                     e1.printStackTrace();
                 }
                 workPanel.setVisible(false);
+                manyButton.get(id).setBackground(null);
                 saveComm.removeActionListener(saveComm.getActionListeners()[0]);
             }
         };
@@ -131,12 +140,12 @@ public class GUI extends JFrame {
 
     private GUI() throws SQLException {
         allSerialsName = SerialsMethods.allSerial();
-        int sizeWidth = 350;
-        int sizeHeight = 550;
+        int sizeWidth = 420;
+        int sizeHeight = 650;
         int locationX = (screenSize.width - sizeWidth) / 2;
         int locationY = (screenSize.height - sizeHeight) / 2;
         frameMain.setContentPane(mainPanel);
-        frameMain.setTitle("My Serials");
+        frameMain.setTitle("Serials GO");
         frameMain.setVisible(true);
         frameMain.setBounds(locationX, locationY, sizeWidth, sizeHeight);
         frameMain.setMinimumSize(new Dimension(420, 650));
@@ -144,7 +153,6 @@ public class GUI extends JFrame {
         addSerialsPanel.setVisible(false);
         rPanel.setVisible(true);
         createAllSerials();
-
         Font font1 = new Font("Verdana", Font.PLAIN, 9);
         Font font2 = new Font("Verdana", Font.BOLD, 14);
         clickTo.setFont(font1);
@@ -231,161 +239,172 @@ public class GUI extends JFrame {
             JComboBox<String> comboBox;
             @Override
             public void actionPerformed(ActionEvent e) {
-                int sizeWidth = 420;
-                int sizeHeight = 175;
-                int locationX = (screenSize.width - sizeWidth) / 2;
-                int locationY = (screenSize.height - sizeHeight) / 2;
                 JFrame frameChange = new JFrame();
-                frameChange.setTitle("Change Serial");
-                frameChange.setBounds(locationX, locationY, sizeWidth, sizeHeight);
-                frameChange.setMinimumSize(new Dimension(420, 175));
-                frameChange.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-                frameChange.setResizable(false);
-                frameMain.setVisible(false);
-                frameChange.setVisible(true);
-                JPanel panelChange = new JPanel(new GridBagLayout());
-                frameChange.setContentPane(panelChange);
-                try {
-                    comboBox = new JComboBox<>(SerialsMethods.allSerial().toArray(new String[SerialsMethods.allSerial().size()]));
-                    c.weightx = 1;
-                    c.fill = GridBagConstraints.HORIZONTAL;
-                    c.gridx = 0;
-                    c.gridy = 0;
-                    c.insets.set(3, 3, 3, 3);
-                    panelChange.add(comboBox, c);
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }
-
-                JLabel name = new JLabel("Name: ");
-                c.fill = GridBagConstraints.HORIZONTAL;
-                c.weightx = 0.5;
-                c.gridx = 1;
-                c.gridy = 0;
-                c.insets.set(3, 3, 3, 3);
-                panelChange.add(name, c);
-
-                JTextField nameField = new JTextField();
-                c.fill = GridBagConstraints.HORIZONTAL;
-                c.weightx = 3;
-                c.gridx = 2;
-                c.gridy = 0;
-                c.insets.set(3, 3, 3, 3);
-                panelChange.add(nameField, c);
-
-                JLabel URL = new JLabel("URL: ");
-                c.fill = GridBagConstraints.HORIZONTAL;
-                c.weightx = 0.5;
-                c.gridx = 1;
-                c.gridy = 1;
-                c.insets.set(3, 3, 3, 3);
-                panelChange.add(URL, c);
-
-                JTextField URLField = new JTextField();
-                c.fill = GridBagConstraints.HORIZONTAL;
-                c.weightx = 3;
-                c.gridx = 2;
-                c.gridy = 1;
-                c.insets.set(3, 3, 3, 3);
-                panelChange.add(URLField, c);
-
-                JButton change = new JButton("Change");
-                c.fill = GridBagConstraints.NONE;
-                c.ipadx = 70;
-                c.weightx = 1;
-                c.gridx = 0;
-                c.gridy = 2;
-                c.gridwidth = 2;
-                c.insets.set(3, 3, 3, 3);
-                panelChange.add(change, c);
-
-                JButton delete = new JButton("Delete");
-                c.fill = GridBagConstraints.NONE;
-                c.ipadx = 70;
-                c.weightx = 1;
-                c.gridx = 1;
-                c.gridx = 1;
-                c.gridy = 2;
-                c.gridwidth = 2;
-                c.insets.set(3, 3, 3, 3);
-                panelChange.add(delete, c);
-
-                JButton cancel = new JButton("Cancel");
-                c.fill = GridBagConstraints.NONE;
-                c.ipadx = 70;
-                c.weightx = 1;
-                c.gridx = 1;
-                c.gridy = 3;
-                c.gridwidth = 2;
-                c.insets.set(3, 3, 3, 190);
-                panelChange.add(cancel, c);
-
-                delete.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        nameField.setText("");
-                        URLField.setText("");
-                        try {
-                            SerialsMethods.deleteSerial((String) comboBox.getSelectedItem());
-                            comboBox.removeAllItems();
-                            for (int x = 0; 0 < SerialsMethods.allSerial().size(); x++) {
-                                if (x == SerialsMethods.allSerial().size())
-                                    break;
-                                comboBox.addItem(SerialsMethods.allSerial().get(x));
-                            }
-                        } catch (SQLException e1) {
-                            e1.printStackTrace();
-                        }
+                if (!Objects.equals(frameChange.getTitle(), "Change Serial")) {
+                    int sizeWidth = 420;
+                    int sizeHeight = 175;
+                    int locationX = (screenSize.width - sizeWidth) / 2;
+                    int locationY = (screenSize.height - sizeHeight) / 2;
+                    frameChange = new JFrame();
+                    frameChange.setTitle("Change Serial");
+                    frameChange.setBounds(locationX, locationY, sizeWidth, sizeHeight);
+                    frameChange.setMinimumSize(new Dimension(sizeWidth, sizeHeight));
+                    frameChange.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+                    frameChange.setAlwaysOnTop(true);
+//                    frameChange.setResizable(false);
+                    frameMain.setVisible(false);
+                    frameChange.setVisible(true);
+                    JPanel panelChange = new JPanel(new GridBagLayout());
+                    frameChange.setContentPane(panelChange);
+                    GridBagConstraints c2 = new GridBagConstraints();
+                    try {
+                        comboBox = new JComboBox<>(SerialsMethods.allSerial().toArray(new String[SerialsMethods.allSerial().size()]));
+//                    c.weightx = 1;
+                        c2.fill = GridBagConstraints.HORIZONTAL;
+                        c2.gridx = 0;
+                        c2.gridy = 0;
+                        c2.insets.set(0, 0, 0, 0);
+                        panelChange.add(comboBox, c2); //TODO: Тут нужно сделать нормальное окно, а не как даун.
+                        frameChange.setMinimumSize(new Dimension(Math.toIntExact((long) comboBox.getPreferredSize().getWidth())+190, sizeHeight));
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
                     }
-                });
 
-                cancel.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
+                    JLabel name = new JLabel("Name: ");
+                    c2.fill = GridBagConstraints.HORIZONTAL;
+//                c.weightx = 0.5;
+                    c2.gridx = 1;
+                    c2.gridy = 0;
+                    c2.insets.set(0, 5, 0, 0);
+                    panelChange.add(name, c2);
 
-                        allSerials.removeAll();
-                        try {
-                            printButton(SerialsMethods.allSerial());  //фикс.
-                        } catch (SQLException e1) {
-                            e1.printStackTrace();
-                        }
-                        frameMain.setSize(new Dimension(400, 500));
-                        nameField.setText("");
-                        URLField.setText("");
-                        frameMain.setVisible(true);
-                        frameChange.setVisible(false);
-                    }
-                });
+                    JTextField nameField = new JTextField();
+                    nameField.setPreferredSize(new Dimension(150, 20));
+                    c2.fill = GridBagConstraints.HORIZONTAL;
+//                c.weightx = 3;
+                    c2.gridx = 2;
+                    c2.gridy = 0;
+                    c2.insets.set(0, 0, 0, 0);
+                    panelChange.add(nameField, c2);
+//
+                    JLabel URL = new JLabel("URL: ");
+                    c2.fill = GridBagConstraints.HORIZONTAL;
+//                c.weightx = 0.5;
+                    c2.gridx = 1;
+                    c2.gridy = 1;
+                    c2.insets.set(0, 5, 0, 0);
+                    panelChange.add(URL, c2);
+//
+                    JTextField URLField = new JTextField();
+                    c2.fill = GridBagConstraints.HORIZONTAL;
+//                c.weightx = 3;
+                    c2.gridx = 2;
+                    c2.gridy = 1;
+                    c2.insets.set(0, 0, 0, 0);
+                    panelChange.add(URLField, c2);
+//
+                    JButton change = new JButton("Change");
+                    c2.fill = GridBagConstraints.HORIZONTAL;
+//                c.ipadx = 70;
+//                c.weightx = 1;
+                    c2.gridx = 0;
+                    c2.gridy = 3;
+//                c.gridwidth = 2;
+                    c2.insets.set(5, 60, 0, 20);
+                    panelChange.add(change, c2);
+//
+                    JButton delete = new JButton("Delete");
+                    c2.fill = GridBagConstraints.HORIZONTAL;
+//                c.ipadx = 40;
+//                c.weightx = 1;
+                    c2.gridx = 1;
+                    c2.gridy = 3;
+                    c2.gridwidth = 2;
+                    c2.insets.set(5, 25, 0, 60);
+                    panelChange.add(delete, c2);
+//
+                    JButton cancel = new JButton("Cancel");
+                    c2.fill = GridBagConstraints.NONE;
+                    c2.ipadx = 50;
+//                c.weightx = 2;
+                    c2.gridx = 0;
+                    c2.gridy = 4;
+                    c2.gridwidth = 3;
+                    c2.insets.set(10, 0, 0, 0);
+                    panelChange.add(cancel, c2);
 
-                change.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        try {
-                            if (!nameField.getText().equals("")) {
-                                SerialsMethods.changeSerialName(nameField.getText(), (String) comboBox.getSelectedItem());
-                            }
-                            if (!URLField.getText().equals("")) {
-                                SerialsMethods.changeSerialURL(URLField.getText(), (String) comboBox.getSelectedItem());
-                            }
+                    JFrame finalFrameChange1 = frameChange;
+                    delete.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
                             nameField.setText("");
                             URLField.setText("");
-                            comboBox.removeAllItems();
-                            for (int x = 0; 0 < SerialsMethods.allSerial().size(); x++) {
-                                if (x == SerialsMethods.allSerial().size())
-                                    break;
-                                comboBox.addItem(SerialsMethods.allSerial().get(x));
+                            try {
+                                SerialsMethods.deleteSerial((String) comboBox.getSelectedItem());
+                                comboBox.removeAllItems();
+                                for (int x = 0; 0 < SerialsMethods.allSerial().size(); x++) {
+                                    if (x == SerialsMethods.allSerial().size())
+                                        break;
+                                    comboBox.addItem(SerialsMethods.allSerial().get(x));
+                                    finalFrameChange1.setMinimumSize(new Dimension(Math.toIntExact((long) comboBox.getPreferredSize().getWidth())+190, sizeHeight));
+                                }
+                            } catch (SQLException e1) {
+                                e1.printStackTrace();
                             }
-                            allSerials.removeAll();
-                            printButton(SerialsMethods.allSerial());
-                            frameMain.setSize(new Dimension(400, 500));
-                        } catch (SQLException e1) {
-                            e1.printStackTrace();
                         }
 
-                    }
-                });
+                    });
 
+                    cancel.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
 
+                            allSerials.removeAll();
+                            try {
+                                printButton(SerialsMethods.allSerial());  //фикс.
+                            } catch (SQLException e1) {
+                                e1.printStackTrace();
+                            }
+                            frameMain.setSize(new Dimension(400, 500));
+                            nameField.setText("");
+                            URLField.setText("");
+                            frameMain.setVisible(true);
+                            finalFrameChange1.setVisible(false);
+                        }
+                    });
+
+                    change.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            try {
+                                if (!nameField.getText().equals("")) {
+                                    SerialsMethods.changeSerialName(nameField.getText(), (String) comboBox.getSelectedItem());
+                                }
+                                if (!URLField.getText().equals("")) {
+                                    SerialsMethods.changeSerialURL(URLField.getText(), (String) comboBox.getSelectedItem());
+                                }
+                                nameField.setText("");
+                                URLField.setText("");
+                                comboBox.removeAllItems();
+                                for (int x = 0; 0 < SerialsMethods.allSerial().size(); x++) {
+                                    if (x == SerialsMethods.allSerial().size())
+                                        break;
+                                    comboBox.addItem(SerialsMethods.allSerial().get(x));
+                                }
+                                allSerials.removeAll();
+                                printButton(SerialsMethods.allSerial());
+                                frameMain.setSize(new Dimension(400, 500));
+                                finalFrameChange1.setMinimumSize(new Dimension(Math.toIntExact((long) comboBox.getPreferredSize().getWidth())+190, sizeHeight));
+                            } catch (SQLException e1) {
+                                e1.printStackTrace();
+                            }
+
+                        }
+                    });
+
+                }else{
+                    frameChange.setVisible(true);
+                }
             }
         });
 
@@ -397,6 +416,7 @@ public class GUI extends JFrame {
                 int locationX = (screenSize.width - sizeWidth) / 2;
                 int locationY = (screenSize.height - sizeHeight) / 2;
                 JFrame frameSettings = new JFrame();
+                frameSettings.setAlwaysOnTop(true);
                 frameSettings.setTitle("Settings");
                 frameSettings.setBounds(locationX, locationY, sizeWidth, sizeHeight);
                 frameSettings.setMinimumSize(new Dimension(400, 175));
@@ -928,4 +948,5 @@ public class GUI extends JFrame {
 
         }
     }
+
 }
