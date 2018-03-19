@@ -106,7 +106,6 @@ public class GUI extends JFrame {
                 }
 //                workPanel.setVisible(false);
 //                manyButton.get(id).setBackground(null);
-                openSerial.removeActionListener(openSerial.getActionListeners()[0]);
             }
         };
         ActionListener save = new ActionListener() {
@@ -119,6 +118,7 @@ public class GUI extends JFrame {
                 }
                 workPanel.setVisible(false);
                 manyButton.get(id).setBackground(null);
+                openSerial.removeActionListener(openSerial.getActionListeners()[0]);
                 saveComm.removeActionListener(saveComm.getActionListeners()[0]);
             }
         };
